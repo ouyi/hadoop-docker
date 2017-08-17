@@ -99,8 +99,7 @@ RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PRE
 RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
 
 # Install Apache Pig
-RUN curl http://apache.mirrors.pair.com/pig/pig-0.16.0/pig-0.16.0.tar.gz -o /tmp/pig.tar.gz
-RUN tar xzf /tmp/pig.tar.gz -C /usr/local/
+RUN curl -s http://apache.mirrors.pair.com/pig/pig-0.16.0/pig-0.16.0.tar.gz | tar -xz -C /usr/local/
 COPY pig_env.sh /etc/profile.d/pig_env.sh
 
 CMD ["/etc/bootstrap.sh", "-d"]
