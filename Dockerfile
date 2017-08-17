@@ -59,7 +59,7 @@ ADD yarn-site.xml $HADOOP_PREFIX/etc/hadoop/yarn-site.xml
 # prepare tez installation
 ADD tez-site.xml $HADOOP_PREFIX/etc/hadoop/tez-site.xml
 RUN mkdir -p /root/tez
-RUN curl -s http://www-eu.apache.org/dist/tez/0.8.5/apache-tez-0.8.5-bin.tar.gz | tar -xz -C /root/tez
+RUN curl -s http://www-eu.apache.org/dist/tez/0.8.4/apache-tez-0.8.4-bin.tar.gz | tar -xz -C /root/tez
 
 RUN $HADOOP_PREFIX/bin/hdfs namenode -format
 
@@ -97,6 +97,11 @@ RUN echo "Port 2122" >> /etc/ssh/sshd_config
 
 RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -mkdir -p /user/root
 RUN service sshd start && $HADOOP_PREFIX/etc/hadoop/hadoop-env.sh && $HADOOP_PREFIX/sbin/start-dfs.sh && $HADOOP_PREFIX/bin/hdfs dfs -put $HADOOP_PREFIX/etc/hadoop/ input
+
+# Install Apache Pig
+RUN curl http://apache.mirrors.pair.com/pig/pig-0.16.0/pig-0.16.0.tar.gz -o /tmp/pig.tar.gz
+RUN tar xzf /tmp/pig.tar.gz -C /usr/local/
+COPY pig_env.sh /etc/profile.d/pig_env.sh
 
 CMD ["/etc/bootstrap.sh", "-d"]
 
