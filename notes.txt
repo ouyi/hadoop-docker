@@ -1,0 +1,24 @@
+alias ll='ls -l'
+tar xzf apache-tez-0.8.5-bin.tar.gz 
+export PATH=$HADOOP_PREFIX/sbin:$HADOOP_PREFIX/bin:$PATH
+hadoop fs -mkdir /apps
+hadoop fs -copyFromLocal apache-tez-0.8.5-bin/share/tez.tar.gz /apps/apache-tez-0.8.5-bin.tar.gz
+hadoop fs -ls /apps/
+cp apache-tez-0.8.5-bin/conf/tez-default-template.xml /usr/local/hadoop/etc/hadoop/
+mv /usr/local/hadoop/etc/hadoop/tez-default-template.xml /usr/local/hadoop/etc/hadoop/tez-site.xml
+vi /usr/local/hadoop/etc/hadoop/tez-site.xml
+export TEZ_CONF_DIR=/usr/local/hadoop/etc/hadoop/
+export TEZ_JARS=/root/apache-tez-0.8.5-bin
+export HADOOP_CLASSPATH=${TEZ_CONF_DIR}:${TEZ_JARS}/*:${TEZ_JARS}/lib/*
+vi input.txt
+hadoop fs -copyFromLocal input.txt /tmp/
+hadoop jar tez-examples-0.8.5.jar orderedwordcount /tmp/input.txt /tmp/output
+yarn jar tez-examples-0.8.5.jar orderedwordcount /tmp/input.txt /tmp/output
+
+diff tez/apache-tez-0.8.5-bin/conf/tez-default-template.xml
+/usr/local/hadoop/etc/hadoop/tez-site.xml
+772a773
+>     <value>${fs.defaultFS}/apps/apache-tez-0.8.5-bin.tar.gz</value>
+
+hadoop fs -copyFromLocal -f tez-helloworld.jar /apps/tez/
+yarn jar tez-helloworld.jar io.github.ouyi.tez.HelloWorld /tmp/input.txt /tmp/output1 false
